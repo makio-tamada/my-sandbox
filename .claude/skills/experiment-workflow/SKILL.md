@@ -60,11 +60,7 @@ git switch -c exp/NNNN-slug
 1. `reports/NNNN-slug.md` を作成する（書き方は `$experiment-report`）
 2. `reports/README.md` の索引に行を追加する
 3. 日本語 Conventional Commits でコミットし、`git push -u origin exp/NNNN-slug`
-4. PR を作成する。本文に **`Closes #<Issue番号>`** を必ず含める
-
-```shell
-gh pr create --title "<type>: NNNN <日本語の要約>" --body-file <path>
-```
+4. PR を作成する（手順は `$create-pr`）。本文に **`Closes #<Issue番号>`** を必ず含める
 
 ## 7. ここで止まる
 

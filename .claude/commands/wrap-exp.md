@@ -30,12 +30,9 @@ description: 検証結果をレポートにまとめ、索引を更新して PR 
    git push -u origin exp/NNNN-slug
    ```
 
-5. **PR を作成する。** 本文に **`Closes #<Issue番号>`** を必ず含める。
-   Issue 番号が不明なら `gh issue list` で確認する
-
-   ```shell
-   gh pr create --title "feat: NNNN <日本語の要約>" --body-file <path>
-   ```
+5. **PR を作成する。** 手順は `$create-pr` に従う。
+   本文に **`Closes #<Issue番号>`** を必ず含め、GitHub 側でリンクが成立したことまで確認する
+   （Issue 番号が不明なら `gh issue list` で確認する）
 
 6. **PR の URL を報告して停止する**
 

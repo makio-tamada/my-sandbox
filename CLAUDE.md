@@ -87,6 +87,7 @@ API キーは `.env` の `ANTHROPIC_API_KEY` を環境変数経由で参照し�
 | --- | --- |
 | `experiment-workflow` | 検証を始める・進める・締めるとき（全体手順） |
 | `experiment-report` | `reports/` にレポートを書くとき |
+| `create-pr` | Pull Request を作成する・直すとき |
 | `benchmark` | 速度・メモリ・精度を計測して比較するとき |
 | `llm-experiment` | Claude API やエージェントを検証するとき |
 | `python-env` | Python の検証環境を用意するとき |
