@@ -1,0 +1,53 @@
+name: 技術検証
+description: 気になった技術の検証を登録する
+title: "[検証] "
+labels: ["experiment"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: 確かめたいこと
+      description: 何を知りたいのかを 1〜3 行で書いてください
+      placeholder: Polars と DuckDB で 1000 万行の集計をしたとき、どちらがどれだけ速いか
+    validations:
+      required: true
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: 仮説・予想
+      description: 現時点の予想。外れても構いません（外れたこと自体が結果になります）
+    validations:
+      required: false
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 完了条件
+      description: 何が分かれば終わりか。ここが曖昧だと検証が終わりません
+      placeholder: |
+        - 両者の実行時間を 5 回試行の中央値で比較できている
+        - どちらをどんな場面で選ぶべきかを 1 行で言える
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 想定する種別
+      description: templates/ のどの雛形から始めるか
+      options:
+        - python-script（単発スクリプト）
+        - python-project（テストを書く）
+        - llm-anthropic（Claude API / エージェント）
+        - まだ分からない
+    validations:
+      required: true
+
+  - type: textarea
+    id: refs
+    attributes:
+      label: 参考リンク
+      description: きっかけになった記事やドキュメント
+    validations:
+      required: false

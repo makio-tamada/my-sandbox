@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# 仮想環境
+.venv/
+venv/
+env/
+ENV/
+
+# キャッシュ・テスト
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+
+# 秘密情報
+.env
+.env.local
+.env.*.local
+credentials.json
+secrets.yaml
+
+# OS / エディタ
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+
+# 検証で扱う大きめのデータ（experiments 配下のみ。reports/assets は残す）
+experiments/**/data/
+experiments/**/*.csv
+experiments/**/*.tsv
+experiments/**/*.parquet
+experiments/**/*.pkl
+experiments/**/*.db
+experiments/**/*.sqlite3
+experiments/**/outputs/
+
+# uv.lock は再現性のためコミットする（無視しない）
