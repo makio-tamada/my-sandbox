@@ -7,6 +7,7 @@
 
 | 番号 | テーマ | 種別 | 状態 | 結論 | Issue | 日付 |
 | --- | --- | --- | --- | --- | --- | --- |
+| [0001](0001-pgvector-pool-guc-reset.md) | asyncpgプールのRESET ALLでpgvectorのef_searchが消える問題 | python-project | ✅ 完了 | `init=`のみだと2回目以降のacquireでef_searchが消え、recall@10が97.95%→86.05%(11.9pt)落ちる。`init=`+`setup=`/`server_settings=`/`PGOPTIONS`/`SET LOCAL`は劣化を防げるが、`SET LOCAL`はp50で約1.1msのオーバーヘッドがある | #3 | 2026-09-11 |
 | [0003](0003-rag-failure-taxonomy.md) | 最小RAG構成の回答失敗を4分類で実測する | python-script | ✅ 完了 | recall@5(記事単位)は90.0%と高いが、正解記事を検索できたケースでも生成正答率は42.6%しかなく、誤答(31件)が空+圏外(6件)を大きく上回る | #5 | 2026-09-11 |
 
 ## 新しい検証を始める
