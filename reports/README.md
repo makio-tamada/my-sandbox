@@ -7,7 +7,7 @@
 
 | 番号 | テーマ | 種別 | 状態 | 結論 | Issue | 日付 |
 | --- | --- | --- | --- | --- | --- | --- |
-| - | （まだ検証はありません） | - | - | - | - | - |
+| [0001](0001-pgvector-pool-guc-reset.md) | asyncpgプールのRESET ALLでpgvectorのef_searchが消える問題 | python-project | ✅ 完了 | `init=`のみだと2回目以降のacquireでef_searchが消え、recall@10が97.95%→86.05%(11.9pt)落ちる。`init=`+`setup=`/`server_settings=`/`PGOPTIONS`/`SET LOCAL`は劣化を防げるが、`SET LOCAL`はp50で約1.1msのオーバーヘッドがある | #3 | 2026-09-11 |
 
 ## 新しい検証を始める
 
