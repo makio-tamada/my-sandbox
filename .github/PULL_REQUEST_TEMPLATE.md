@@ -10,7 +10,7 @@ Closes #
 
 ## レポート
 
-<!-- reports/NNNN-slug.md へのリンク -->
+<!-- reports/NNNN-slug.md への Markdown リンク。ファイルが未作成・未コミットのまま PR を出さない -->
 
 ## 未検証・残課題
 
