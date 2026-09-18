@@ -34,23 +34,39 @@ def load_data(cache_dir: Path, universe_limit: int | None) -> tuple[pd.DataFrame
 
 def report_period(
     label: str,
+    signals: pd.DataFrame,
     bars: pd.DataFrame,
-    fins: pd.DataFrame,
-    screen_cfg: ScreenConfig,
     trade_cfg: TradeConfig,
+    start: pd.Timestamp | None = None,
+    end: pd.Timestamp | None = None,
 ) -> dict:
-    signals = screener.build_signals(bars, fins, screen_cfg)
-    candidates = signals.loc[
-        signals["is_candidate"], [config.DATE_COL, config.CODE_COL]
-    ].reset_index(drop=True)
+    """期間を切るのは**候補の日付だけ**。四本値は全期間を渡す。
+
+    四本値を先に切ってしまうと、急騰実績の参照窓（250 営業日）と保有期間が
+    期間の境界で途切れてしまい、期間ごとに条件の意味が変わってしまう。
+    """
+    window = signals
+    if start is not None:
+        window = window[window[config.DATE_COL] >= start]
+    if end is not None:
+        window = window[window[config.DATE_COL] < end]
+
+    candidates = window.loc[window["is_candidate"], [config.DATE_COL, config.CODE_COL]].reset_index(
+        drop=True
+    )
     trades = backtest.run_backtest(candidates, bars, trade_cfg)
     stats = backtest.summarize(trades, trade_cfg)
 
     print(f"\n{'=' * 72}\n{label}\n{'=' * 72}")
-    print(f"期間: {bars[config.DATE_COL].min():%Y-%m-%d} 〜 {bars[config.DATE_COL].max():%Y-%m-%d}")
-    print(f"銘柄数: {bars[config.CODE_COL].nunique()} / 候補 (銘柄×日): {len(candidates)}")
+    if window.empty:
+        print("  対象レコードなし")
+        return {"label": label, "candidates": 0, "stats": stats, "trades": trades}
+    print(
+        f"シグナル対象期間: {window[config.DATE_COL].min():%Y-%m-%d} 〜 {window[config.DATE_COL].max():%Y-%m-%d}"
+    )
+    print(f"銘柄数: {window[config.CODE_COL].nunique()} / 候補 (銘柄×日): {len(candidates)}")
     print("\n-- 条件ごとの絞り込み --")
-    print(screener.funnel(signals).to_string(index=False))
+    print(screener.funnel(window).to_string(index=False))
     print("\n-- 成績 --")
     for key, value in stats.items():
         print(f"  {key}: {value}")
@@ -66,6 +82,18 @@ def main() -> None:
     )
     parser.add_argument(
         "--oos-split", default=config.DEFAULT.oos_split, help="この日より前を in-sample"
+    )
+    parser.add_argument(
+        "--signals-from",
+        default=None,
+        help="この日以降のシグナルだけを売買する。助走期間（財務の通期開示と"
+        "急騰実績の参照窓が埋まるまで）を除くために使う",
+    )
+    parser.add_argument(
+        "--eps-source",
+        choices=["fy_actual", "forecast"],
+        default=base_screen.eps_source,
+        help="PER の分母。fy_actual = 直近通期の実績 EPS、forecast = 会社予想 EPS",
     )
     parser.add_argument("--max-per", type=float, default=base_screen.max_per)
     parser.add_argument("--max-pbr", type=float, default=base_screen.max_pbr)
@@ -84,6 +112,7 @@ def main() -> None:
         max_pbr=args.max_pbr,
         min_roe=args.min_roe,
         max_market_cap_mn=args.max_mktcap_mn,
+        eps_source=args.eps_source,
     )
     trade_cfg = replace(
         base_trade,
@@ -94,18 +123,31 @@ def main() -> None:
     )
 
     bars, fins = load_data(args.cache_dir, args.universe_limit)
+    # シグナルは全期間で 1 回だけ計算する。期間で切るのは候補の日付のみ。
+    signals = screener.build_signals(bars, fins, screen_cfg)
+    print(
+        f"四本値 {len(bars)} 行 / {bars[config.CODE_COL].nunique()} 銘柄 / "
+        f"{bars[config.DATE_COL].min():%Y-%m-%d} 〜 {bars[config.DATE_COL].max():%Y-%m-%d}"
+    )
+
+    signals_from = pd.Timestamp(args.signals_from) if args.signals_from else None
     split = pd.Timestamp(args.oos_split)
 
-    results = [report_period("全期間", bars, fins, screen_cfg, trade_cfg)]
-    in_sample = bars[bars[config.DATE_COL] < split]
-    out_sample = bars[bars[config.DATE_COL] >= split]
-    if not in_sample.empty and not out_sample.empty:
+    results = [report_period("全期間", signals, bars, trade_cfg, start=signals_from)]
+    if signals_from is None or split > signals_from:
         results.append(
-            report_period(f"in-sample (< {args.oos_split})", in_sample, fins, screen_cfg, trade_cfg)
+            report_period(
+                f"in-sample (< {args.oos_split})",
+                signals,
+                bars,
+                trade_cfg,
+                start=signals_from,
+                end=split,
+            )
         )
         results.append(
             report_period(
-                f"out-of-sample (>= {args.oos_split})", out_sample, fins, screen_cfg, trade_cfg
+                f"out-of-sample (>= {args.oos_split})", signals, bars, trade_cfg, start=split
             )
         )
 
