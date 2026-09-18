@@ -8,9 +8,17 @@
 
 とし、エントリーは t の翌営業日の寄付とする（バックテスト側の責務）。
 
-PER の分母は年次の EPS でなければ意味が壊れるので、四半期開示（1Q〜4Q）の
+PER の分母は年次の EPS でなければ意味が壊れるので、四半期開示（1Q〜3Q）の
 累計 EPS は使わず、直近の通期（``CurPerType == "FY"``）開示の EPS を使う。
+``eps_source="forecast"`` にすると会社予想 EPS（``FEPS``）を使う「予想 PER」に切り替わる。
 一方 BPS は期末時点の残高なので、期種別を問わず直近の開示を使う。
+
+実データで分かった落とし穴（00_explore_schema.py と実際の取得結果より）:
+
+- ``ROE`` は **比率**で返る（0.12 = 12%）。百分率と取り違えると条件が全滅する。
+- ``ROE`` は通期開示にしか入らず、通期でも 19/33 しか埋まっていない。``NP / ShEq`` で補う。
+- ``BPS`` は 32/115 しか埋まっていない。``ShEq / (ShOutFY - TrShFY)`` で補うと 95/115 になる。
+- 数値はすべて文字列（空文字を含む）で返るので、必ず数値化してから使う。
 """
 
 from __future__ import annotations
@@ -51,15 +59,46 @@ def prepare_bars(bars: pd.DataFrame, cfg: ScreenConfig) -> pd.DataFrame:
 
 
 def prepare_fins(fins: pd.DataFrame) -> pd.DataFrame:
-    """財務サマリを、銘柄 × 開示日で 1 行にそろえる。
+    """財務サマリを、銘柄 × 開示日で 1 行にそろえ、欠けている指標を補う。
 
     同じ日に訂正開示などで複数行が来ることがあるので、最後の 1 行を採用する。
     """
     df = fins.copy()
     df[config.DISC_DATE_COL] = pd.to_datetime(df[config.DISC_DATE_COL])
-    for col in (config.EPS_COL, config.BPS_COL, config.ROE_COL, config.EQUITY_COL):
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    numeric_cols = [
+        config.EPS_COL,
+        config.FORECAST_EPS_COL,
+        config.BPS_COL,
+        config.ROE_COL,
+        config.EQUITY_COL,
+        config.SHAREHOLDERS_EQUITY_COL,
+        config.NET_PROFIT_COL,
+        config.SHARES_OUT_COL,
+        config.TREASURY_SHARES_COL,
+    ]
+    for col in numeric_cols:
+        # API は数値も文字列で返し、欠測は空文字。to_numeric で NaN に倒す。
+        # 列そのものが無いこともある（プランや開示種別による）ので、その場合は全 NaN にする。
+        source = df[col] if col in df.columns else pd.Series(pd.NA, index=df.index)
+        df[col] = pd.to_numeric(source, errors="coerce")
+
+    equity = df[config.SHAREHOLDERS_EQUITY_COL]
+    shares = df[config.SHARES_OUT_COL] - df[config.TREASURY_SHARES_COL].fillna(0)
+    shares = shares.where(shares > 0)
+
+    # BPS は 3 割弱しか開示されないので、自己資本 / 自己株式控除後の株式数で補う。
+    df["bps_used"] = df[config.BPS_COL].fillna(equity / shares)
+
+    # ROE は通期にしか入らない。四半期の NP は期初からの累計なので、
+    # 通期以外の行で NP / ShEq を計算すると過小になる。通期に限って補う。
+    is_fy = df[config.PERIOD_TYPE_COL] == FY_PERIOD
+    roe_fallback = (df[config.NET_PROFIT_COL] / equity.where(equity > 0)).where(is_fy)
+    df["roe_used"] = df[config.ROE_COL].fillna(roe_fallback)
+
+    df["eps_fy_actual"] = df[config.EPS_COL].where(is_fy)
+    df["eps_forecast"] = df[config.FORECAST_EPS_COL]
+
     df = df.sort_values([config.CODE_COL, config.DISC_DATE_COL])
     return df.drop_duplicates([config.CODE_COL, config.DISC_DATE_COL], keep="last")
 
@@ -93,24 +132,33 @@ def build_signals(
     prepared = prepare_bars(bars, cfg)
     fin = prepare_fins(fins)
 
-    # EPS と ROE は年次の指標なので通期開示だけを使う
+    # ROE と実績 EPS は年次の指標なので通期開示だけを使う
     fy = fin[fin[config.PERIOD_TYPE_COL] == FY_PERIOD]
-    df = _asof_join(prepared, fy, [config.EPS_COL, config.ROE_COL], "_fy")
-    # BPS は期末残高なので期種別を問わず直近を使う
-    df = _asof_join(df, fin, [config.BPS_COL], "_last")
+    df = _asof_join(prepared, fy, ["eps_fy_actual", "roe_used"], "_fy")
+    # BPS（期末残高）と会社予想 EPS は期種別を問わず直近の開示を使う
+    df = _asof_join(df, fin, ["bps_used", "eps_forecast"], "_last")
 
-    eps = df[f"{config.EPS_COL}_fy"]
-    bps = df[f"{config.BPS_COL}_last"]
+    if cfg.eps_source == "forecast":
+        eps = df["eps_forecast_last"]
+    elif cfg.eps_source == "fy_actual":
+        eps = df["eps_fy_actual_fy"]
+    else:
+        raise ValueError(f"eps_source は 'fy_actual' か 'forecast': {cfg.eps_source!r}")
+
+    bps = df["bps_used_last"]
     close = df[config.CLOSE_COL]
 
+    # 赤字（EPS <= 0）・債務超過（BPS <= 0）は割安とは言えないので除く
+    df["eps_used"] = eps
     df["per"] = close.where(eps > 0) / eps.where(eps > 0)
     df["pbr"] = close.where(bps > 0) / bps.where(bps > 0)
-    df["roe"] = df[f"{config.ROE_COL}_fy"]
+    df["roe"] = df["roe_used_fy"]
 
     df["pass_per"] = df["per"].between(0, cfg.max_per, inclusive="right")
     df["pass_pbr"] = df["pbr"].between(0, cfg.max_pbr, inclusive="right")
     df["pass_roe"] = df["roe"] >= cfg.min_roe
     df["pass_spike"] = df["has_spike"].fillna(False)
+    # 時価総額が無い銘柄（ETF・REIT など）はここで落ちる
     df["pass_size"] = df[config.MKTCAP_COL] <= cfg.max_market_cap_mn
     df["pass_liquidity"] = df["avg_volume"] >= cfg.min_avg_volume
 

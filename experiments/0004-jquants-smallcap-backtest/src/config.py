@@ -36,10 +36,17 @@ MKTCAP_COL = "MktCap"  # 時価総額（百万円）
 # /fins/summary
 DISC_DATE_COL = "DiscDate"  # 開示日。この日以降でないと使ってはいけない
 PERIOD_TYPE_COL = "CurPerType"  # 1Q / 2Q / 3Q / 4Q / 5Q / FY
-EPS_COL = "EPS"  # 1 株当たり当期純利益
+EPS_COL = "EPS"  # 1 株当たり当期純利益（四半期は期初からの累計）
+FORECAST_EPS_COL = "FEPS"  # 会社予想 EPS（通期）。日本の「予想 PER」の分母
 BPS_COL = "BPS"  # 1 株当たり純資産
 EQUITY_COL = "Eq"  # 純資産
-ROE_COL = "ROE"  # 自己資本利益率（%）。API が算出済みなので自前計算は不要
+SHAREHOLDERS_EQUITY_COL = "ShEq"  # 自己資本
+NET_PROFIT_COL = "NP"  # 当期純利益
+SHARES_OUT_COL = "ShOutFY"  # 期末発行済株式数（自己株式を含む）
+TREASURY_SHARES_COL = "TrShFY"  # 期末自己株式数
+# ROE は **比率** で返る（0.12 = 12%）。百分率と取り違えると全銘柄が条件から落ちる。
+# しかも通期開示にしか入らず、通期でも 6 割程度しか埋まらないので NP / ShEq で補う。
+ROE_COL = "ROE"
 
 
 @dataclass(frozen=True)
@@ -48,7 +55,11 @@ class ScreenConfig:
 
     max_per: float = 15.0
     max_pbr: float = 1.0
-    min_roe: float = 10.0  # %
+    # ROE の閾値。API に合わせて **比率**で持つ（0.10 = 10%）
+    min_roe: float = 0.10
+    # PER の分母に何を使うか。"fy_actual" = 直近通期の実績 EPS（実績 PER）、
+    # "forecast" = 会社予想 EPS（予想 PER。日本の慣行だが会社の見通しに依存する）
+    eps_source: str = "fy_actual"
     # 「過去に 1 日で +10% 以上」の判定
     spike_threshold: float = 0.10
     spike_lookback_days: int = 250

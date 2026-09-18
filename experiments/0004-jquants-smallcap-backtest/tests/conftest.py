@@ -32,16 +32,26 @@ def make_bars(rows: list[dict]) -> pd.DataFrame:
 
 
 def make_fins(rows: list[dict]) -> pd.DataFrame:
+    """財務サマリ。API は数値も文字列（欠測は空文字）で返すので、それを再現する。"""
+
+    def cell(value) -> str:
+        return "" if value is None else str(value)
+
     return pd.DataFrame(
         [
             {
                 config.DISC_DATE_COL: r["disc_date"],
                 config.CODE_COL: r["code"],
                 config.PERIOD_TYPE_COL: r.get("period", "FY"),
-                config.EPS_COL: r.get("eps"),
-                config.BPS_COL: r.get("bps"),
-                config.ROE_COL: r.get("roe"),
-                config.EQUITY_COL: r.get("equity"),
+                config.EPS_COL: cell(r.get("eps")),
+                config.FORECAST_EPS_COL: cell(r.get("feps")),
+                config.BPS_COL: cell(r.get("bps")),
+                config.ROE_COL: cell(r.get("roe")),
+                config.EQUITY_COL: cell(r.get("equity")),
+                config.SHAREHOLDERS_EQUITY_COL: cell(r.get("sh_eq")),
+                config.NET_PROFIT_COL: cell(r.get("np")),
+                config.SHARES_OUT_COL: cell(r.get("shares_out")),
+                config.TREASURY_SHARES_COL: cell(r.get("treasury")),
             }
             for r in rows
         ]
@@ -61,5 +71,5 @@ def linear_bars(code: str, start: str, closes: list[float], **kw) -> list[dict]:
 def passing_fins() -> pd.DataFrame:
     """PER/PBR/ROE の条件をすべて満たす財務。株価 1000 円を前提にした値。"""
     return make_fins(
-        [{"disc_date": "2025-01-10", "code": "1111", "eps": 100.0, "bps": 2000.0, "roe": 12.0}]
+        [{"disc_date": "2025-01-10", "code": "1111", "eps": 100.0, "bps": 2000.0, "roe": 0.12}]
     )
