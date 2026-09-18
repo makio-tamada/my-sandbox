@@ -7,7 +7,7 @@
 
 | 番号 | テーマ | 種別 | 状態 | 結論 | Issue | 日付 |
 | --- | --- | --- | --- | --- | --- | --- |
-| - | （まだ検証はありません） | - | - | - | - | - |
+| 0004 | [小型株スクリーニング + 値幅ルールのバックテスト](0004-jquants-smallcap-backtest.md) | python-project | ✅ | in-sample で PF 4.35 の条件が out-of-sample では PF 0.93 に反転。条件チューニングの in→out 順位相関は -0.05 でほぼ無相関 | [#8](https://github.com/makio-tamada/my-sandbox/issues/8) | 2026-09-18 |
 
 ## 新しい検証を始める
 

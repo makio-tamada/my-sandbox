@@ -14,6 +14,7 @@ from src.backtest import (
     EXIT_STOP_LOSS,
     EXIT_TAKE_PROFIT,
     EXIT_TIME_LIMIT,
+    PriceSeries,
     run_backtest,
     summarize,
 )
@@ -183,3 +184,15 @@ def test_summarize_reports_win_rate_and_profit_factor():
 
 def test_summarize_on_empty_trades():
     assert summarize(pd.DataFrame(), CFG) == {"取引数": 0}
+
+
+def test_price_series_can_be_reused_across_runs():
+    """条件を振って何度も回すとき、畳み込み済みの四本値を渡しても結果は変わらない。"""
+    bars = bars_from("1111", "2025-02-03", [(100, 100, 100, 100), (100, 120, 99, 118)])
+    signals = signal_on("1111", "2025-02-03")
+    from_frame = run_backtest(signals, bars, CFG)
+    prices = PriceSeries(bars)
+    first = run_backtest(signals, prices, CFG)
+    second = run_backtest(signals, prices, CFG)
+    pd.testing.assert_frame_equal(from_frame, first)
+    pd.testing.assert_frame_equal(first, second)

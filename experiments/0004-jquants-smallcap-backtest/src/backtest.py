@@ -36,22 +36,32 @@ class _Bar:
     close: float
 
 
-def _bars_by_code(bars: pd.DataFrame) -> dict[str, list[_Bar]]:
-    df = bars.sort_values([config.CODE_COL, config.DATE_COL])
-    out: dict[str, list[_Bar]] = {}
-    for code, group in df.groupby(config.CODE_COL, sort=False):
-        out[str(code)] = [
-            _Bar(d, o, h, low, c)
-            for d, o, h, low, c in zip(
-                group[config.DATE_COL],
-                group[config.OPEN_COL],
-                group[config.HIGH_COL],
-                group[config.LOW_COL],
-                group[config.CLOSE_COL],
-                strict=True,
-            )
-        ]
-    return out
+class PriceSeries:
+    """四本値を銘柄ごとの配列に畳んだもの。
+
+    条件を振って何度もバックテストを回すとき、この変換が実行時間の大半を占める。
+    一度作って使い回せるようにクラスにしてある。
+    """
+
+    def __init__(self, bars: pd.DataFrame) -> None:
+        df = bars.sort_values([config.CODE_COL, config.DATE_COL])
+        self.by_code: dict[str, list[_Bar]] = {}
+        for code, group in df.groupby(config.CODE_COL, sort=False):
+            self.by_code[str(code)] = [
+                _Bar(d, o, h, low, c)
+                for d, o, h, low, c in zip(
+                    group[config.DATE_COL],
+                    group[config.OPEN_COL],
+                    group[config.HIGH_COL],
+                    group[config.LOW_COL],
+                    group[config.CLOSE_COL],
+                    strict=True,
+                )
+            ]
+        self.index_of: dict[str, dict[pd.Timestamp, int]] = {
+            code: {bar.date: i for i, bar in enumerate(bar_list)}
+            for code, bar_list in self.by_code.items()
+        }
 
 
 def _resolve_exit(entry_price: float, bar: _Bar, cfg: TradeConfig) -> tuple[float, str] | None:
@@ -75,17 +85,18 @@ def _resolve_exit(entry_price: float, bar: _Bar, cfg: TradeConfig) -> tuple[floa
 
 
 def run_backtest(
-    candidates: pd.DataFrame, bars: pd.DataFrame, cfg: TradeConfig | None = None
+    candidates: pd.DataFrame,
+    bars: pd.DataFrame | PriceSeries,
+    cfg: TradeConfig | None = None,
 ) -> pd.DataFrame:
     """候補リストを順に建玉にしていき、約定した取引の一覧を返す。
 
     candidates は ``screen()`` の戻り値（Date, Code を含む）を想定する。
+    bars には四本値そのものでも、畳み込み済みの ``PriceSeries`` でも渡せる。
     """
     cfg = cfg or TradeConfig()
-    series = _bars_by_code(bars)
-    index_of: dict[str, dict[pd.Timestamp, int]] = {
-        code: {bar.date: i for i, bar in enumerate(bar_list)} for code, bar_list in series.items()
-    }
+    prices = bars if isinstance(bars, PriceSeries) else PriceSeries(bars)
+    series, index_of = prices.by_code, prices.index_of
 
     trades: list[dict] = []
     # code -> 手仕舞い日。保有中の銘柄を重ねて買わないための記録
