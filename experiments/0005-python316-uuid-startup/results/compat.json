@@ -1,0 +1,92 @@
+{
+  "pickle: uuid4() の往復": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": -11,
+      "outcome": "クラッシュ（シグナル 11）"
+    }
+  },
+  "pickle: UUID(str) の往復": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": -11,
+      "outcome": "クラッシュ（シグナル 11）"
+    }
+  },
+  "pickle: UUID(str, is_safe=unknown) の往復": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": 0,
+      "outcome": "True"
+    }
+  },
+  "pickle: uuid1() の往復": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": 0,
+      "outcome": "True"
+    }
+  },
+  "copy.deepcopy: UUID を含む dict": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": -11,
+      "outcome": "クラッシュ（シグナル 11）"
+    }
+  },
+  "copy.copy: uuid7()": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": -11,
+      "outcome": "クラッシュ（シグナル 11）"
+    }
+  },
+  "hash(u) == hash(u.int)": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": 0,
+      "outcome": "False"
+    }
+  },
+  "C 版と純 Python 版の同値オブジェクトが set で 1 件になる": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": 0,
+      "outcome": "False"
+    }
+  },
+  "fork 後に親子の uuid4() が重複しない（各 100,000 件）": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "returncode": 0,
+      "outcome": "True"
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "returncode": 0,
+      "outcome": "True"
+    }
+  }
+}
