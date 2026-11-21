@@ -1,0 +1,44 @@
+{
+  "-I -c pass": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "median_ms": 9.669563999921138,
+      "p10_ms": 9.256731300024512,
+      "p90_ms": 13.014061099954688,
+      "runs": 200
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "median_ms": 9.302749000028143,
+      "p10_ms": 8.92082290002918,
+      "p90_ms": 12.984550799956196,
+      "runs": 200
+    }
+  },
+  "-c pass（site あり）": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "median_ms": 9.396301500032678,
+      "p10_ms": 9.235873999955402,
+      "p90_ms": 9.67228370010389,
+      "runs": 200
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "median_ms": 9.002764499996374,
+      "p10_ms": 8.84213969997063,
+      "p90_ms": 9.322770000039782,
+      "runs": 200
+    }
+  },
+  "-I -c 'import 標準 6 モジュール'": {
+    "/root/.local/share/uv/python/cpython-3.15.2-linux-x86_64-gnu/bin/python3.15": {
+      "median_ms": 22.990526000000955,
+      "p10_ms": 22.403677400029665,
+      "p90_ms": 26.84174050001502,
+      "runs": 200
+    },
+    "/root/.local/share/uv/python/cpython-3.16-linux-x86_64-gnu/bin/python3.16": {
+      "median_ms": 21.958940499928303,
+      "p10_ms": 21.43837649996385,
+      "p90_ms": 25.82877220006594,
+      "runs": 200
+    }
+  }
+}
