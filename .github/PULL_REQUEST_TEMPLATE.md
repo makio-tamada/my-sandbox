@@ -23,6 +23,7 @@ Closes #
 - [ ] 検証系: `reports/NNNN-slug.md` をコミットし、`reports/README.md` の索引に行を足した
 - [ ] `.env`・API キー・`.venv/`・巨大なデータが含まれていない
 - [ ] 自動実行で作った PR には `auto` ラベルを付けた
+- [ ] 作成後、PR にコメントで `@makio-tamada` をメンションした
 
 ---
 

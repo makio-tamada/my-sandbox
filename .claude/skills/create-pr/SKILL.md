@@ -94,7 +94,21 @@ gh api repos/makio-tamada/my-sandbox/commits/$sha/check-runs --jq '.check_runs[]
 
 `conclusion` が `success` になるまで待つ（数十秒〜数分）。`failure` なら原因を直して追加コミットする。
 
-## 6. 報告して止まる
+## 6. レビューを依頼する
+
+PR を作成したら、PR にコメントを 1 件付けて `@makio-tamada` をメンションする。
+コメントには結論を 1 行と、見てほしい点（未検証の項目など）を書く。
+
+```shell
+gh api repos/makio-tamada/my-sandbox/issues/<PR番号>/comments \
+  -f body='@makio-tamada PR を作成しました。レビューをお願いします。
+結論: <1 行>
+見てほしい点: <未検証の項目など。なければ「特になし」>'
+```
+
+追加コミットのたびにはメンションしない（1 PR につき作成時の 1 回だけ）。
+
+## 7. 報告して止まる
 
 PR の URL と、未検証として残した項目を報告する。**マージしない。**
 
