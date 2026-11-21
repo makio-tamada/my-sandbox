@@ -1,0 +1,147 @@
+{
+  "3.15.2": {
+    "python": "3.15.2",
+    "mode": "default",
+    "uuid4_impl": "Python",
+    "uuid_class_module": "uuid",
+    "ops": {
+      "uuid4()": {
+        "median_ns": 710.9203559999742,
+        "min_ns": 701.8846989999474,
+        "max_ns": 725.2880660000756,
+        "number": 1000000
+      },
+      "uuid7()": {
+        "median_ns": 1136.0090849998983,
+        "min_ns": 1121.5196149998974,
+        "max_ns": 1186.1209400001371,
+        "number": 400000
+      },
+      "UUID(str)": {
+        "median_ns": 543.8162150001062,
+        "min_ns": 530.3734299999405,
+        "max_ns": 567.5706639999589,
+        "number": 1000000
+      },
+      "UUID(bytes=)": {
+        "median_ns": 410.0371399999858,
+        "min_ns": 405.89363799995226,
+        "max_ns": 411.4525359999561,
+        "number": 1000000
+      },
+      "str(UUID)": {
+        "median_ns": 274.3330415000287,
+        "min_ns": 268.79599249997455,
+        "max_ns": 308.56847749998906,
+        "number": 2000000
+      }
+    },
+    "checks": {
+      "uuid4_all_version4": true,
+      "uuid4_all_rfc_variant": true,
+      "uuid4_unique": true,
+      "uuid7_all_version7": true,
+      "uuid7_strictly_increasing": true,
+      "uuid7_unique": true,
+      "roundtrip_str_bytes": true
+    }
+  },
+  "3.16.0a2 C": {
+    "python": "3.16.0a2",
+    "mode": "default",
+    "uuid4_impl": "C",
+    "uuid_class_module": "uuid",
+    "ops": {
+      "uuid4()": {
+        "median_ns": 160.01039024999386,
+        "min_ns": 158.21429100000728,
+        "max_ns": 162.31462524999074,
+        "number": 4000000
+      },
+      "uuid7()": {
+        "median_ns": 158.16766149998784,
+        "min_ns": 157.516980749989,
+        "max_ns": 161.83067800000117,
+        "number": 4000000
+      },
+      "UUID(str)": {
+        "median_ns": 96.3562578000051,
+        "min_ns": 95.79430100000081,
+        "max_ns": 97.21470130000398,
+        "number": 10000000
+      },
+      "UUID(bytes=)": {
+        "median_ns": 63.18422650000457,
+        "min_ns": 62.91710840000632,
+        "max_ns": 64.3721160000041,
+        "number": 10000000
+      },
+      "str(UUID)": {
+        "median_ns": 33.769382899998845,
+        "min_ns": 33.32034900000167,
+        "max_ns": 33.90703320000057,
+        "number": 20000000
+      }
+    },
+    "checks": {
+      "uuid4_all_version4": true,
+      "uuid4_all_rfc_variant": true,
+      "uuid4_unique": true,
+      "uuid7_all_version7": true,
+      "uuid7_strictly_increasing": true,
+      "uuid7_unique": true,
+      "roundtrip_str_bytes": true,
+      "c_vs_py_same_int": true,
+      "c_vs_py_same_str": true,
+      "c_vs_py_eq": true,
+      "c_vs_py_same_hash": false
+    }
+  },
+  "3.16.0a2 純Python": {
+    "python": "3.16.0a2",
+    "mode": "pure",
+    "uuid4_impl": "Python",
+    "uuid_class_module": "uuid",
+    "ops": {
+      "uuid4()": {
+        "median_ns": 729.5826019999367,
+        "min_ns": 710.3382939999392,
+        "max_ns": 770.4487920000247,
+        "number": 1000000
+      },
+      "uuid7()": {
+        "median_ns": 1073.7718724999468,
+        "min_ns": 1056.9736700000476,
+        "max_ns": 1201.732952499981,
+        "number": 400000
+      },
+      "UUID(str)": {
+        "median_ns": 539.3763820000004,
+        "min_ns": 523.16165000002,
+        "max_ns": 606.3453630000595,
+        "number": 1000000
+      },
+      "UUID(bytes=)": {
+        "median_ns": 418.3285889999979,
+        "min_ns": 409.8857989999942,
+        "max_ns": 483.9606409999533,
+        "number": 1000000
+      },
+      "str(UUID)": {
+        "median_ns": 264.3498270000464,
+        "min_ns": 255.52865649996195,
+        "max_ns": 310.29059050001706,
+        "number": 2000000
+      }
+    },
+    "checks": {
+      "uuid4_all_version4": true,
+      "uuid4_all_rfc_variant": true,
+      "uuid4_unique": true,
+      "uuid7_all_version7": true,
+      "uuid7_strictly_increasing": true,
+      "uuid7_unique": true,
+      "roundtrip_str_bytes": true
+    }
+  }
+}
