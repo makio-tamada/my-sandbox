@@ -7,6 +7,21 @@ description: 検証用の Python 環境を uv で用意する。依存を追加�
 
 **`pip` は使わない。** このリポジトリの Python 環境はすべて `uv` で管理する。
 
+## パッケージを取得できない環境
+
+クラウドの自動実行など、PyPI に届かない環境では `uv run` の依存解決が失敗する
+（`Failed to fetch: https://pypi.org/simple/...` や名前解決のエラー）。そのときは次のようにする。
+
+1. 入っているライブラリを確認する
+
+   ```shell
+   python3 -c "import importlib.metadata as m; print(sorted(d.metadata['Name'] for d in m.distributions()))"
+   ```
+
+2. 必要なものが入っていれば `python3 main.py` で直接実行する。PEP 723 のメタデータは残してよい
+3. 入っていなければ、テーマか手法を変える。インストールを何度も試さない
+4. レポートの「前提・計測環境」に「パッケージ取得不可のため既存環境で実行」と、使ったライブラリのバージョンを書く
+
 ## 種別の選び方
 
 | 状況 | 種別 | 起点 |

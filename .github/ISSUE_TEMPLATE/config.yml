@@ -1,0 +1,2 @@
+# テンプレートを使わない Issue を作れないようにする（Web 画面から作る場合）
+blank_issues_enabled: false

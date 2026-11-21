@@ -18,6 +18,9 @@ gh issue list --label experiment
 gh issue create --title "[検証] <テーマ>" --body-file <path> --label experiment
 ```
 
+これらが GraphQL のエラーで失敗する環境では、`$create-pr` の「REST API での操作」を使う。
+スケジュールタスクからの自動実行では、`CLAUDE.md` の「自動実行（スケジュールタスク）のルール」も守る。
+
 ## 2. 番号と slug を決める
 
 ```shell
