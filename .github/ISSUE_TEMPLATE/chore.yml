@@ -1,0 +1,51 @@
+name: 整備・機能追加・修正
+description: テンプレート・設定・スキル・ドキュメントの整備や、既存の検証コードの修正を登録する
+title: "[整備] "
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 種別
+      description: ブランチ名の接頭辞になる（CLAUDE.md の「ブランチ命名規則」）
+      options:
+        - chore（テンプレート・設定・土台の整備）
+        - feat（スキル・コマンド等の機能追加）
+        - fix（既存の検証コードの修正）
+        - docs（レポート・ドキュメントのみの修正）
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: やりたいこと・理由
+      description: 何に困っていて、何を変えたいか
+    validations:
+      required: true
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: やること
+      description: チェックリストで書く
+      placeholder: |
+        - [ ] 〇〇を追加する
+        - [ ] △△を直す
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 完了条件
+      description: 何ができていれば終わりか
+    validations:
+      required: true
+
+  - type: input
+    id: target
+    attributes:
+      label: 対象の検証番号（fix のときだけ）
+      placeholder: "0003"
+    validations:
+      required: false

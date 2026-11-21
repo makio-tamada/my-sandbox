@@ -24,6 +24,9 @@ description: 検証の Issue を作成し、ブランチを切って雛形を用
    gh issue create --title "[検証] <テーマ>" --body-file <path> --label experiment,<種別ラベル>
    ```
 
+   `gh issue create` が GraphQL のエラーで失敗する環境では、`$create-pr` の「REST API での操作」の手順で作る。
+   自動実行のときは `auto` ラベルも付ける
+
 3. **ブランチを切る**
 
    ```shell

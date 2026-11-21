@@ -32,9 +32,13 @@ description: 検証結果をレポートにまとめ、索引を更新して PR 
 
 5. **PR を作成する。** 手順は `$create-pr` に従う。
    本文に **`Closes #<Issue番号>`** を必ず含め、GitHub 側でリンクが成立したことまで確認する
-   （Issue 番号が不明なら `gh issue list` で確認する）
+   （Issue 番号が不明なら `gh issue list` で確認する）。
+   `gh pr create` が GraphQL のエラーで失敗する環境では、`$create-pr` の「REST API での操作」の手順で作り、
+   PR ルールチェックの結果が `success` になったことまで確認する。自動実行のときは PR に `auto` ラベルを付ける
 
-6. **PR の URL を報告して停止する**
+6. **PR にコメントで `@makio-tamada` をメンションしてレビューを依頼する**（手順は `$create-pr`）
+
+7. **PR の URL を報告して停止する**
 
 **マージしないでください。** マージは人間が判断します（`gh pr merge` は permissions で deny されています）。
 PR がマージされると Issue は `Closes #N` によって自動でクローズされます。

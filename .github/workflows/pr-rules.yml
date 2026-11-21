@@ -1,0 +1,76 @@
+name: PR ルールチェック
+
+# CLAUDE.md の「必ず守ること」のうち、機械的に確かめられるものを PR ごとに確認する。
+# 1. 本文に Closes #<Issue番号> がある
+# 2. ブランチ名が命名規則どおり
+# 3. 検証系ブランチ（exp/ fix/）は reports/NNNN-slug.md がコミットされ、索引に載っている
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ルールを確認する
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          errors=0
+
+          # 1. Closes #N（Fixes / Resolves も GitHub は同じ扱い）
+          if printf '%s\n' "$PR_BODY" | grep -Eiq '^[[:space:]]*(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+'; then
+            echo "OK: Issue への紐付け（Closes #N）がある"
+          else
+            echo "::error::PR 本文に 'Closes #<Issue番号>' の行がありません。Issue のない PR は出せません"
+            errors=$((errors + 1))
+          fi
+
+          # 2. ブランチ名
+          exp_re='^(exp|fix)/[0-9]{4}-[a-z0-9]+(-[a-z0-9]+)*$'
+          other_re='^(chore|feat|docs)/[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$'
+          if [[ "$BRANCH" =~ $exp_re || "$BRANCH" =~ $other_re ]]; then
+            echo "OK: ブランチ名 $BRANCH は命名規則どおり"
+          else
+            echo "::error::ブランチ名 '$BRANCH' が命名規則に合いません（exp/NNNN-slug, fix/NNNN-slug, chore|feat|docs/<Issue番号>-slug）"
+            errors=$((errors + 1))
+          fi
+          if [ "${#BRANCH}" -gt 50 ]; then
+            echo "::warning::ブランチ名が 50 文字を超えています（${#BRANCH} 文字）"
+          fi
+
+          # 3. 検証系はレポートと索引
+          if [[ "$BRANCH" =~ $exp_re ]]; then
+            name="${BRANCH#*/}"
+            if [ -f "reports/${name}.md" ]; then
+              echo "OK: reports/${name}.md がある"
+            else
+              echo "::error::reports/${name}.md がコミットされていません"
+              errors=$((errors + 1))
+            fi
+            if [ -d "experiments/${name}" ]; then
+              echo "OK: experiments/${name}/ がある"
+            elif [[ "$BRANCH" == exp/* ]]; then
+              echo "::error::experiments/${name}/ がありません（ブランチ名とディレクトリ名を一致させてください）"
+              errors=$((errors + 1))
+            fi
+            if grep -q "(${name}.md)" reports/README.md; then
+              echo "OK: reports/README.md の索引に載っている"
+            else
+              echo "::error::reports/README.md の索引に ${name} の行がありません"
+              errors=$((errors + 1))
+            fi
+          fi
+
+          if [ "$errors" -gt 0 ]; then
+            echo "ルール違反が ${errors} 件あります"
+            exit 1
+          fi
+          echo "すべてのルールを満たしています"

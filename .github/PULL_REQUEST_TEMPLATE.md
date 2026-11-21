@@ -2,7 +2,7 @@ Closes #
 
 ## 検証したこと
 
-<!-- 何を確かめたのかを 1〜3 行で -->
+<!-- 何を確かめたのかを 1〜3 行で（整備系の PR では「変更したこと」） -->
 
 ## 結果サマリ
 
@@ -10,11 +10,20 @@ Closes #
 
 ## レポート
 
-<!-- reports/NNNN-slug.md への Markdown リンク。ファイルが未作成・未コミットのまま PR を出さない -->
+<!-- reports/NNNN-slug.md への Markdown リンク。ファイルが未作成・未コミットのまま PR を出さない。整備系の PR では「なし」 -->
 
 ## 未検証・残課題
 
 <!-- 確かめていないことは正直に書く。なければ「なし」 -->
+
+## チェック
+
+- [ ] 1 行目の `Closes #` に Issue 番号を入れた
+- [ ] ブランチ名が命名規則どおり（`exp/NNNN-slug` / `fix/NNNN-slug` / `chore|feat|docs/<Issue番号>-slug`）
+- [ ] 検証系: `reports/NNNN-slug.md` をコミットし、`reports/README.md` の索引に行を足した
+- [ ] `.env`・API キー・`.venv/`・巨大なデータが含まれていない
+- [ ] 自動実行で作った PR には `auto` ラベルを付けた
+- [ ] 作成後、PR にコメントで `@makio-tamada` をメンションした
 
 ---
 

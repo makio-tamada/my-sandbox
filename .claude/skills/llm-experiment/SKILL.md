@@ -8,7 +8,7 @@ description: Claude API やエージェント、MCP、プロンプトの挙動�
 ## 書き始める前に
 
 **`claude-api` スキルを先に読む。** モデル ID・料金・パラメータを記憶で書かない。
-現行のモデル ID は `claude-opus-5` / `claude-sonnet-5` / `claude-haiku-4-5-20251001` / `claude-fable-5-1`。
+現行のモデル ID は `claude-opus-5-5` / `claude-sonnet-5-5` / `claude-haiku-5-5` / `claude-fable-5-2`（2026-11 時点）。
 
 雛形は `templates/llm-anthropic/` を使う。
 

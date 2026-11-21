@@ -82,9 +82,33 @@ gh api graphql -f query='{repository(owner:"makio-tamada",name:"my-sandbox"){
   --jq '.data.repository.pullRequest.closingIssuesReferences.nodes'
 ```
 
-対象の Issue が返ってこなければ `Closes #N` の書き方が間違っている。本文を直す（次項）。
+対象の Issue が返ってこなければ `Closes #N` の書き方が間違っている。本文を直す（下の「既存の PR を直すとき」）。
 
-## 6. 報告して止まる
+GraphQL が使えない環境では、この確認の代わりに **PR ルールチェック（GitHub Actions）の結果**を見る。
+`Closes #N` の行がなければチェックが失敗する。
+
+```shell
+sha=$(gh api repos/makio-tamada/my-sandbox/pulls/<PR番号> --jq .head.sha)
+gh api repos/makio-tamada/my-sandbox/commits/$sha/check-runs --jq '.check_runs[] | [.name, .status, .conclusion] | @tsv'
+```
+
+`conclusion` が `success` になるまで待つ（数十秒〜数分）。`failure` なら原因を直して追加コミットする。
+
+## 6. レビューを依頼する
+
+PR を作成したら、PR にコメントを 1 件付けて `@makio-tamada` をメンションする。
+コメントには結論を 1 行と、見てほしい点（未検証の項目など）を書く。
+
+```shell
+gh api repos/makio-tamada/my-sandbox/issues/<PR番号>/comments \
+  -f body='@makio-tamada PR を作成しました。レビューをお願いします。
+結論: <1 行>
+見てほしい点: <未検証の項目など。なければ「特になし」>'
+```
+
+追加コミットのたびにはメンションしない（1 PR につき作成時の 1 回だけ）。
+
+## 7. 報告して止まる
 
 PR の URL と、未検証として残した項目を報告する。**マージしない。**
 
@@ -104,3 +128,30 @@ gh api -X PATCH repos/makio-tamada/my-sandbox/pulls/<PR番号> -f title="<新し
 `-F body=@<path>` はファイルから読み込む形式、`-f` は文字列をそのまま渡す形式で、使い分けに注意する。
 
 コードを直した場合は、PR を作り直さず同じブランチに追加コミットして push すれば PR に反映される。
+
+## REST API での操作（GraphQL が使えない環境）
+
+クラウドの実行環境では `gh issue create` / `gh issue list` / `gh pr create` が GraphQL を使うため失敗する。
+同じことを REST API で行う。本文はファイルに書いて `-F body=@<path>` で渡す。
+
+```shell
+# Issue の一覧
+gh api 'repos/makio-tamada/my-sandbox/issues?state=open&per_page=50' \
+  --jq '.[] | select(.pull_request == null) | [.number, .title] | @tsv'
+
+# Issue の作成（ラベルは複数指定できる）
+gh api repos/makio-tamada/my-sandbox/issues -f title='[検証] <テーマ>' -F body=@<path> \
+  -f 'labels[]=experiment' -f 'labels[]=auto' --jq '.number, .html_url'
+
+# PR の作成（先に git push -u origin <ブランチ名> しておく）
+gh api repos/makio-tamada/my-sandbox/pulls -f title='<type>: <日本語の要約>' \
+  -f head='<ブランチ名>' -f base=main -F body=@<path> --jq '.number, .html_url'
+
+# PR にラベルを付ける（PR は Issue と同じ番号空間）
+gh api repos/makio-tamada/my-sandbox/issues/<PR番号>/labels -f 'labels[]=auto'
+
+# Issue にラベルを付ける（断念したとき）
+gh api repos/makio-tamada/my-sandbox/issues/<Issue番号>/labels -f 'labels[]=断念'
+```
+
+**マージの API（`PUT .../pulls/<番号>/merge`）は呼ばない。** Issue を閉じる操作（`state=closed`）もしない。
