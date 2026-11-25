@@ -1,0 +1,15 @@
+{
+  "root": "/usr/local/lib/python3.13",
+  "n_paragraphs": 150860,
+  "n_base": 100000,
+  "n_query": 1000,
+  "n_sample": 10000,
+  "dim": 384,
+  "vocab_size": 30618,
+  "svd_explained_variance_ratio_sum": 0.35111433267593384,
+  "zero_vectors_query": 1,
+  "seconds_collect": 46.7,
+  "seconds_embed": 14.3,
+  "sha256_xb": "34d43b3dc8b76d28",
+  "sha256_xq": "b49b0690befcc95b"
+}
