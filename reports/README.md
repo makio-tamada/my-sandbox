@@ -12,6 +12,7 @@
 | [0004](0004-jquants-smallcap-backtest.md) | 小型株スクリーニング + 値幅ルールのバックテスト | python-project | ✅ 完了 | in-sample で PF 4.35 だった条件が out-of-sample では PF 0.93 に反転。条件を 243 通り振っても in→out の順位相関は -0.05 でほぼ無相関 | #8 | 2026-09-18 |
 | [0005](0005-python316-uuid-startup.md) | Python 3.16.0a2 の uuid C 実装と起動高速化を 3.15 と実測比較 | python-script | ✅ 完了 | uuid4 は 3.15.2 比 4.4〜4.6倍・uuid7 は 6.9〜7.2倍に高速化(公称15倍/30倍には届かない)。ただし `is_safe` 未指定の UUID を pickle/copy すると SIGSEGV で落ちる。起動は約4%短縮 | #13 | 2026-11-21 |
 | [0006](0006-pydantic-json-memory-regression.md) | pydantic 2.14.4 で model_validate_json のメモリ回帰が解消したか実測する | python-script | ✅ 完了 | 47MBのJSONでピークRSSが2.14.1→2.14.2/2.14.3で+86MB(+15〜19%)、2.14.4では2.14.1より−70MB。Python側の確保量は4版同じで、差はmalloc_trimで返せる領域。from_jsonはメモリ不変だが2.14.2以降約16%遅いまま | #15 | 2026-11-21 |
+| [0007](0007-faiss-116-hnsw-sq-fastscan.md) | faiss 1.16.0 の HNSW シンク除去リンクと IndexSQFastScan を 1.15.1 と CPU で実測比較 | python-script | ✅ 完了 | 10万件×384次元でSQ8総当たりが1.15.1比約2.1倍速(単発p50 6.3→3.0ms)。新IndexSQFastScanは同じ38.4MBでrecall@10 −0.5pt・SQ8の約4倍速(単発1.1ms)。HNSWのシンク除去リンクは単体HNSWのadd()では入らず、明示してもrecallは不変。バッチ計測ではFlatがSQ8より速く見える | #17 | 2026-11-25 |
 
 ## 新しい検証を始める
 

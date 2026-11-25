@@ -1,0 +1,95 @@
+{
+  "faiss_version": "1.15.1",
+  "compile_options": "OPTIMIZE DD AVX2 AVX512 AVX512_SPR AVX512_VPOPCNT ",
+  "python": "3.13.18",
+  "n_base": 100000,
+  "n_query": 1000,
+  "dim": 384,
+  "trials": 5,
+  "flat": [
+    {
+      "threads": 1,
+      "seconds_median": 2.5217703010000605,
+      "seconds_min": 2.3492658090000305,
+      "seconds_max": 2.78163848600002,
+      "qps": 396.5468225252035,
+      "recall_at_10": 1.0
+    },
+    {
+      "threads": 2,
+      "seconds_median": 1.4022453739999037,
+      "seconds_min": 1.2584819530000004,
+      "seconds_max": 1.6050462409999682,
+      "qps": 713.1419497198988,
+      "recall_at_10": 1.0
+    }
+  ],
+  "flat_index_bytes": 153600045,
+  "sq8": [
+    {
+      "threads": 1,
+      "seconds_median": 6.957545737000032,
+      "seconds_min": 6.288629734999972,
+      "seconds_max": 7.157491451999931,
+      "qps": 143.7288431583034,
+      "recall_at_10": 0.9735
+    },
+    {
+      "threads": 2,
+      "seconds_median": 3.3353227930000457,
+      "seconds_min": 3.1902198450000014,
+      "seconds_max": 3.8901429100000087,
+      "qps": 299.8210554308967,
+      "recall_at_10": 0.9735
+    }
+  ],
+  "sq8_index_bytes": 38403153,
+  "sq_fastscan": null,
+  "hnsw": [
+    {
+      "mode": "plain",
+      "M": 32,
+      "efConstruction": 200,
+      "seconds_add": 34.402796825999985,
+      "index_bytes": 180820834,
+      "search": [
+        {
+          "threads": 1,
+          "seconds_median": 0.0967108750000989,
+          "seconds_min": 0.08817587700013974,
+          "seconds_max": 0.09952964300009626,
+          "qps": 10340.098773782964,
+          "recall_at_10": 0.9038,
+          "efSearch": 16
+        },
+        {
+          "threads": 1,
+          "seconds_median": 0.15602002999980868,
+          "seconds_min": 0.14122393499997088,
+          "seconds_max": 0.16514374799999132,
+          "qps": 6409.433455443036,
+          "recall_at_10": 0.959,
+          "efSearch": 32
+        },
+        {
+          "threads": 1,
+          "seconds_median": 0.2379922400000396,
+          "seconds_min": 0.22780804099988927,
+          "seconds_max": 0.27849205500001517,
+          "qps": 4201.817672709974,
+          "recall_at_10": 0.9838,
+          "efSearch": 64
+        },
+        {
+          "threads": 1,
+          "seconds_median": 0.4749268640000537,
+          "seconds_min": 0.4541195660001449,
+          "seconds_max": 0.510809590000008,
+          "qps": 2105.5873562879506,
+          "recall_at_10": 0.996,
+          "efSearch": 128
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "faiss_version": "1.15.1",
+  "runs": [
+    {
+      "nlist": 4096,
+      "quantizer_efSearch": 8,
+      "seconds_train": 24.374359356000014,
+      "seconds_add": 1.316422356999965,
+      "list_size": {
+        "max": 449,
+        "p99": 124.0,
+        "empty_lists": 0,
+        "imbalance_factor": 2.06964736
+      },
+      "assign_accuracy": 0.88256,
+      "search": [
+        {
+          "nprobe": 4,
+          "qps": 19237.480521781057,
+          "seconds_median": 0.05198185900007957,
+          "recall_at_10": 0.6536
+        },
+        {
+          "nprobe": 16,
+          "qps": 9133.75970941339,
+          "seconds_median": 0.10948394000001826,
+          "recall_at_10": 0.7496
+        },
+        {
+          "nprobe": 64,
+          "qps": 3911.4244019511802,
+          "seconds_median": 0.2556613389999711,
+          "recall_at_10": 0.7921
+        }
+      ]
+    }
+  ]
+}

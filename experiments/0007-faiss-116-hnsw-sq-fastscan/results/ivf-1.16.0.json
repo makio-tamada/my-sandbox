@@ -1,0 +1,75 @@
+{
+  "faiss_version": "1.16.0",
+  "runs": [
+    {
+      "nlist": 4096,
+      "quantizer_efSearch": 8,
+      "level_0_link_samples_per_node_default": 3,
+      "level_0_link_samples_per_node": 3,
+      "seconds_train": 24.621625085000005,
+      "seconds_add": 1.250411037000049,
+      "list_size": {
+        "max": 449,
+        "p99": 124.0,
+        "empty_lists": 0,
+        "imbalance_factor": 2.0687839232
+      },
+      "assign_accuracy": 0.88295,
+      "search": [
+        {
+          "nprobe": 4,
+          "qps": 22415.228296402318,
+          "seconds_median": 0.04461252800001603,
+          "recall_at_10": 0.6538
+        },
+        {
+          "nprobe": 16,
+          "qps": 11039.961868851302,
+          "seconds_median": 0.09058002300002954,
+          "recall_at_10": 0.7498
+        },
+        {
+          "nprobe": 64,
+          "qps": 4501.927455219384,
+          "seconds_median": 0.22212708000006387,
+          "recall_at_10": 0.7923
+        }
+      ]
+    },
+    {
+      "nlist": 4096,
+      "quantizer_efSearch": 8,
+      "level_0_link_samples_per_node_default": 3,
+      "level_0_link_samples_per_node": 0,
+      "seconds_train": 24.00127479899993,
+      "seconds_add": 1.2960422810001546,
+      "list_size": {
+        "max": 449,
+        "p99": 124.0,
+        "empty_lists": 0,
+        "imbalance_factor": 2.06964736
+      },
+      "assign_accuracy": 0.88256,
+      "search": [
+        {
+          "nprobe": 4,
+          "qps": 19584.12714327203,
+          "seconds_median": 0.0510617600000387,
+          "recall_at_10": 0.6536
+        },
+        {
+          "nprobe": 16,
+          "qps": 9823.032760376653,
+          "seconds_median": 0.10180155400007607,
+          "recall_at_10": 0.7496
+        },
+        {
+          "nprobe": 64,
+          "qps": 3785.2883745308577,
+          "seconds_median": 0.26418066499991255,
+          "recall_at_10": 0.7921
+        }
+      ]
+    }
+  ]
+}
