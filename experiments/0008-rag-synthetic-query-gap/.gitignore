@@ -1,0 +1,3 @@
+# --fake の出力は動作確認用で、結果ではないのでコミットしない
+runs/fake-*/
+runs/cache/llm_cache_fake.jsonl
